@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Verde from '../assets/verde.jpg';
+import Pig from '../assets/pig.jpg';
+// import Gallina from '../assets/gallina.png';
 
 const ModalContainer = styled.div`
   display: ${props => (props.isOpen ? "block" : "none")};
@@ -9,12 +11,11 @@ const ModalContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding:  10px 17px 16px 48px;
   z-index: 3;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 392px;
+  width: 40%;
   background-image: url(${Verde}); 
   background-size: cover; 
   
@@ -34,18 +35,31 @@ const Title = styled.h2`
   text-align: center;
   font-size: 24px;
   margin-bottom: 20px;
-  color:  rgb(118, 211, 28);;
+  color:  rgb(0, 0, 0);;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+
+  img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 9px;
+    width: 20%;
+    transform: scale(3.5);
+    padding: 38px;
+}
+
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
+  margin-right: -35px;
+  padding: 5px 0px 0px 41px;
 `;
 
 const Label = styled.label`
@@ -112,6 +126,7 @@ function Modal({ isOpen, onClose }) {
       <CloseButton onClick={onClose}>&times;</CloseButton>
       <Title>Formulario</Title>
       <Form onSubmit={handleSubmit}>
+      <img src={Pig} alt='' />   
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <FormGroup>
             <Label htmlFor="name">Nombre</Label>

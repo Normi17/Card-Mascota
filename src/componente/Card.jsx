@@ -18,7 +18,7 @@ const CardsContainer = styled.div`
 
 const CardContainer = styled.div`
   position: relative;
-  background: white;
+  background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -29,6 +29,15 @@ const CardContainer = styled.div`
 
   &:hover {
     transform: translateY(-5px);
+  }
+
+  @media (max-width: 768px) {
+max-width: 400px;
+max-height: 150px;
+    position: relative;
+    align-items: center;
+
+
   }
 `;
 
@@ -41,10 +50,17 @@ const CardImage = styled.img`
   top: 0;
   right: 0; 
   transform: translateY(-50%);
+  @media (max-width: 768px) {
+  margin-right: 157px;
+  width: 160px;
+  height: 160px;
+  transform: translateY(-5px);
+  transform: scale(0.7);
+  }
 `;
 
 const Cajas = styled.div`
-  padding: 69px; /* Reducido el espaciado */
+  padding: 69px; 
   text-align: center;
 
   h2 {
@@ -90,11 +106,20 @@ const Cajas = styled.div`
     cursor: pointer;
 
     .edit-button {
-      font-size: 24px; /* Tamaño de fuente más grande */
+      font-size: 24px; 
       cursor: pointer;
       padding: 10px;
       color: rgb(34, 99, 194);
     }
+  }
+
+  @media (max-width: 768px) {
+    flex-grow: 1;
+    padding: 10px;
+    text-align: left;
+    margin-top: -10px;
+    margin-left: 127px;
+
   }
   
 `;
