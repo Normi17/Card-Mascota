@@ -149,31 +149,31 @@ const cardData = [
     imagen: perros,
     tittle: "Producto 4",
     categoria: "Canino",
-    link: "https://www.example.com",
+    link: "",
   },
   {
     imagen: perros,
     tittle: "Producto 4",
     categoria: "Canino",
-    link: "https://www.example.com",
+    link: "#",
   },
   {
     imagen: perros,
     tittle: "Producto 4",
     categoria: "Canino",
-    link: "https://www.example.com",
+    link: "#",
   },
   {
     imagen: perros,
     tittle: "Producto 4",
     categoria: "Canino",
-    link: "https://www.example.com",
+    link: "#",
   },
   {
     imagen: perros,
     tittle: "Producto 4",
     categoria: "Canino",
-    link: "https://www.example.com",
+    link: "#",
   },
 ];
 

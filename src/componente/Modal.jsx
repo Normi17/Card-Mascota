@@ -1,11 +1,66 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Verde from '../assets/verde.jpg';
-import { IoMdAlert, IoMdCheckmarkCircle } from 'react-icons/io';
+import { IoMdAlert, IoMdCheckmarkCircle } from "react-icons/io";
+import Verde from "../assets/verde.jpg";
 
+const AlertContainer = styled.div`
+  background: #000e29;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: ${(props) => (props.showAlerts ? "block" : "none")};
+`;
+
+const Alert = styled.div`
+  margin: 10px auto;
+  width: 70%;
+  padding: 10px;
+  border-radius: 5px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  box-shadow: 0px 0px 2px #00040a;
+  transition: 0.5s;
+  cursor: pointer;
+
+  &.alert-success {
+    background: rgba(7, 149, 66, 0.12156862745098039);
+    box-shadow: 0px 0px 2px #259c08;
+    color: #0ad406;
+  }
+
+  &.alert-info {
+    background: rgba(7, 73, 149, 0.12156862745098039);
+    box-shadow: 0px 0px 2px #0396ff;
+    color: #0396ff;
+  }
+
+  &.alert-warning {
+    background: rgba(220, 128, 1, 0.16);
+    box-shadow: 0px 0px 2px #ffb103;
+    color: #ffb103;
+  }
+
+  &.alert-danger {
+    background: rgba(220, 17, 1, 0.16);
+    box-shadow: 0px 0px 2px #ff0303;
+    color: #ff0303;
+  }
+
+  & .close {
+    font-size: 18px;
+    color: #0bd2ff;
+    text-shadow: none;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+  }
+`;
 
 const ModalContainer = styled.div`
-  display: ${props => (props.isOpen ? "block" : "none")};
+  display: ${(props) => (props.isOpen ? "block" : "none")};
   position: fixed;
   top: 50%;
   left: 50%;
@@ -19,10 +74,6 @@ const ModalContainer = styled.div`
   background-image: url(${Verde});
   background-size: cover;
   padding: 20px;
-  .file{
-    margin-left: 14%;
-    padding:20px;
-  }
 `;
 
 const CloseButton = styled.span`
@@ -71,9 +122,9 @@ const Input = styled.input`
 
 const ImagePreview = styled.img`
   max-width: 30%;
-  max-height: auto; 
-  margin: 10px auto; 
-  display: block; 
+  max-height: auto;
+  margin: 10px auto;
+  display: block;
 `;
 
 const Button = styled.button`
@@ -93,8 +144,6 @@ const Button = styled.button`
   }
 `;
 
-// ... (importaciones y estilos)
-
 function Modal({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -106,8 +155,40 @@ function Modal({ isOpen, onClose }) {
     image: "",
   });
 
+  const [tallaIsValid, setTallaIsValid] = useState(true);
+  const [pesoIsValid, setPesoIsValid] = useState(true);
+  const [edadIsValid, setEdadIsValid] = useState(true);
+
+  const [alerts, setAlerts] = useState([]);
+
+  const addAlert = (type, message) => {
+    const newAlerts = [...alerts, { type, message }];
+    setAlerts(newAlerts);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "talla") {
+      if (!isNaN(value)) {
+        setTallaIsValid(true);
+      } else {
+        setTallaIsValid(false);
+      }
+    } else if (name === "peso") {
+      if (!isNaN(value)) {
+        setPesoIsValid(true);
+      } else {
+        setPesoIsValid(false);
+      }
+    } else if (name === "edad") {
+      if (!isNaN(value)) {
+        setEdadIsValid(true);
+      } else {
+        setEdadIsValid(false);
+      }
+    }
+
     setFormData({
       ...formData,
       [name]: value,
@@ -115,7 +196,6 @@ function Modal({ isOpen, onClose }) {
   };
 
   const handleBlur = (field) => {
-    // Aquí verificamos si el campo está lleno y actualizamos el estado.
     if (formData[field] !== "") {
       setFormData({
         ...formData,
@@ -124,10 +204,32 @@ function Modal({ isOpen, onClose }) {
     }
   };
 
+  const handleCloseAlert = (index) => {
+    const updatedAlerts = [...alerts];
+    updatedAlerts.splice(index, 1);
+    setAlerts(updatedAlerts);
+  };
+
   const handleSubmit = (e) => {
-    e.preventDefault(); // Evita la recarga de la página al enviar el formulario.
-    console.log(formData);
-    onClose();
+    e.preventDefault();
+
+    const isFormValid =
+      formData.name !== "" &&
+      formData.color !== "" &&
+      formData.talla !== "" &&
+      formData.peso !== "" &&
+      formData.edad !== "" &&
+      formData.sexo !== "" &&
+      tallaIsValid &&
+      pesoIsValid &&
+      edadIsValid;
+
+    if (isFormValid) {
+      console.log(formData);
+      onClose();
+    } else {
+      addAlert("danger", "Rellene todos los campos correctamente");
+    }
   };
 
   const handleImageChange = (e) => {
@@ -143,7 +245,7 @@ function Modal({ isOpen, onClose }) {
   };
 
   const handleCloseModal = () => {
-    setFormData({ // Reiniciar el estado del formulario al cerrar el modal
+    setFormData({
       name: "",
       color: "",
       talla: "",
@@ -160,7 +262,9 @@ function Modal({ isOpen, onClose }) {
       <CloseButton onClick={handleCloseModal}>&times;</CloseButton>
       <Title>Formulario</Title>
       <div className="file">
-        {formData.image && <ImagePreview src={formData.image} alt="Vista previa de la imagen" />}
+        {formData.image && (
+          <ImagePreview src={formData.image} alt="Vista previa de la imagen" />
+        )}
         <input
           type="file"
           id="image"
@@ -171,10 +275,10 @@ function Modal({ isOpen, onClose }) {
       </div>
 
       <Form onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <FormGroup>
             <Label htmlFor="name">Nombre</Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               {formData.name && (
                 <IoMdCheckmarkCircle color="green" size={20} />
               )}
@@ -190,10 +294,7 @@ function Modal({ isOpen, onClose }) {
           </FormGroup>
           <FormGroup>
             <Label htmlFor="color">Color</Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {formData.color && (
-                <IoMdCheckmarkCircle color="green" size={20} />
-              )}
+            <div style={{ display: "flex", alignItems: "center" }}>
               <Input
                 type="text"
                 id="color"
@@ -202,15 +303,22 @@ function Modal({ isOpen, onClose }) {
                 onChange={handleChange}
                 onBlur={() => handleBlur("color")}
               />
+              {formData.color && (
+                <IoMdCheckmarkCircle color="green" size={20} />
+              )}
             </div>
           </FormGroup>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <FormGroup>
             <Label htmlFor="talla">Talla</Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               {formData.talla && (
-                <IoMdCheckmarkCircle color="green" size={20} />
+                tallaIsValid ? (
+                  <IoMdCheckmarkCircle color="green" size={20} />
+                ) : (
+                  <IoMdAlert color="red" size="20" />
+                )
               )}
               <Input
                 type="text"
@@ -224,10 +332,7 @@ function Modal({ isOpen, onClose }) {
           </FormGroup>
           <FormGroup>
             <Label htmlFor="peso">Peso</Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {formData.peso && (
-                <IoMdCheckmarkCircle color="green" size={20} />
-              )}
+            <div style={{ display: "flex", alignItems: "center" }}>
               <Input
                 type="text"
                 id="peso"
@@ -236,15 +341,26 @@ function Modal({ isOpen, onClose }) {
                 onChange={handleChange}
                 onBlur={() => handleBlur("peso")}
               />
+              {formData.peso && (
+                pesoIsValid ? (
+                  <IoMdCheckmarkCircle color="green" size={20} />
+                ) : (
+                  <IoMdAlert color="red" size="20" />
+                )
+              )}
             </div>
           </FormGroup>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <FormGroup>
             <Label htmlFor="edad">Edad</Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               {formData.edad && (
-                <IoMdCheckmarkCircle color="green" size={20} />
+                edadIsValid ? (
+                  <IoMdCheckmarkCircle color="green" size={20} />
+                ) : (
+                  <IoMdAlert color="red" size="20" />
+                )
               )}
               <Input
                 type="text"
@@ -258,10 +374,7 @@ function Modal({ isOpen, onClose }) {
           </FormGroup>
           <FormGroup>
             <Label htmlFor="sexo">Sexo</Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {formData.sexo && (
-                <IoMdCheckmarkCircle color="green" size={20} />
-              )}
+            <div style={{ display: "flex", alignItems: "center" }}>
               <Input
                 type="text"
                 id="sexo"
@@ -270,6 +383,9 @@ function Modal({ isOpen, onClose }) {
                 onChange={handleChange}
                 onBlur={() => handleBlur("sexo")}
               />
+              {formData.sexo && (
+                <IoMdCheckmarkCircle color="green" size={20} />
+              )}
             </div>
           </FormGroup>
         </div>
